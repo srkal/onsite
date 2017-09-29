@@ -1,0 +1,73 @@
+//BEWARE - the local time depends on Time zone configured for this script and for Goole sheet with data
+//Change the Time Zone in File menu - Project settings
+
+//after every script change is necessary to publish it as new version of Web Application
+
+//the script should be called with single parameter ?cid=XXXXXXXX where XXXXXXX is UID of RFID card
+
+//change to id of your copy of linked Google sheet with stored data
+var SS = SpreadsheetApp.openById('189UJD2kwukoMbj9b04qCmCyUebviKi_xK6nt08bwLWs');
+var str = "";
+
+function doGet(e){
+  Logger.log("Starting ...");
+  if (e.parameter.cid === undefined) {
+    return ContentService.createTextOutput("Error: card id missing (parameter cid).");
+  }
+  var cardid = e.parameter.cid;
+  var name = "new-" + cardid;
+  
+  var today = new Date();
+  var monthString = Utilities.formatDate(today, "CET", "yyyy-MM");
+  var mapSheet = SS.getSheetByName('map');
+  //search the name
+  var found = false;
+  for(var i=1; i <= mapSheet.getLastRow(); i++) {
+    var value = mapSheet.getRange(i, 1).getValue();
+    if (value == cardid) {
+      name = mapSheet.getRange(i, 2).getValue();
+      found = true;
+      break;
+    }
+  }
+  //create new name if not present
+  if (!found) {
+    mapSheet.appendRow([cardid, name]);
+  }
+  //search sheet for this month
+  var monthSheet = SS.getSheetByName(monthString);
+  //create one if not exist
+  if (monthSheet == null) {
+      var templateSheet = SS.getSheetByName('template');
+      monthSheet = SS.insertSheet(monthString, {template: templateSheet});
+  }
+  //search user and day
+  found = false;
+  var duration = "";
+  for(var i=1; i <= monthSheet.getLastRow(); i++) {
+    var nameValue = monthSheet.getRange(i, 1).getValue();
+    if ((monthSheet.getRange(i, 1).getValue() == name) && (monthSheet.getRange(i, 2).getValue() == today.getDate())) {
+      monthSheet.getRange(i, 4).setValue(today);
+      found = true;
+      SpreadsheetApp.flush();
+      duration = monthSheet.getRange(i, 5).getDisplayValue();
+      break;
+    }
+  }
+  //create entry if not found
+  if (!found) {
+    monthSheet.appendRow([name, today.getDate(), today]);
+    monthSheet.getRange(monthSheet.getLastRow(), 3).setNumberFormat("dd.mm.yyyy hh:mm:ss");
+    monthSheet.getRange(monthSheet.getLastRow(), 4).setNumberFormat("dd.mm.yyyy hh:mm:ss");
+    monthSheet.getRange(monthSheet.getLastRow(), 5).setFormula('=indirect("R[0]C[-1]",false)-indirect("R[0]C[-2]",false)').setNumberFormat("[hh]:mm");
+    SpreadsheetApp.flush();
+    SS.toast(name, "Příchod do práce");
+    return ContentService.createTextOutput(name + " prichod");
+  } else {
+    SpreadsheetApp.flush();
+    SS.toast(name + "  " + monthSheet.getRange(monthSheet.getLastRow(), 5).getDisplayValue(), "Odchod z práce");
+    return ContentService.createTextOutput(name + " " + duration);
+  }
+}
+
+
