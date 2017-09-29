@@ -16,12 +16,18 @@ visit during day to Google Sheet
 * PCF8574P DIP-16 8-bit I/O Expander
 * RFID module RC522 Kit 13.56 Mhz
 * 16x2 Character LCD Display Module 1602/HD44780 Controller blue backlight
+* I2C Logic Level Converter Bi-Directional Module 5V to 3.3V
 * 2.54mm 2 x 40 Pin Male Double Row Pin Header Strip
 * Double side Prototype PCB Tinned Universal board 5x7 cm
 * Rotary Encoder with Push Button Switch
 * 6mm Shaft Hole Grip Knob
 * color wires
 * 2x 10KOhm resistor, 1x 5KOhm small potenciometer
+
+Note: it is better purchase the LCD with integrated I2C interface, than to
+build own using PFC8574P Expander. Own solution works not with 3.3V. It
+was necessary power up display with 5V and separate the voltage of I2C
+bus using Level Covertor (ESP8266 pins are not 5V tolerant).
 
 ## Used development IDE and libraries
 Arduino IDE 1.8 or later, installed support for ESP8266 Development boards
@@ -43,7 +49,9 @@ modified for ESP8266
 * [RemoteDebug](https://github.com/JoaoLopesF/ESP8266-RemoteDebug-Telnet) Provide
 debug messages over Telnet server
 
+
 ##How it works
+
 Google script is published as Web Application. It should be called with single parameter
 cid containing the UID of RFID card as value:
 <pre>
