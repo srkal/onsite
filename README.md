@@ -50,7 +50,7 @@ modified for ESP8266
 debug messages over Telnet server
 
 
-##How it works
+## How it works
 
 Google script is published as Web Application. It should be called with single parameter
 cid containing the UID of RFID card as value:
