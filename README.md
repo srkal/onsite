@@ -69,3 +69,9 @@ If unknown card ID is delivered, script will create new mapping with default nam
 Script sends back the name of user and the duration between first and last stored 
 time as response. The response is displayed on LCD display.
 
+## Debugging
+The serial communication pins TX, RX are used to rotary encoder. Debug print to
+serial console is not possible. All debug output is redirected to Telnet server.
+Connect to it with any telnet client (Putty) without authorization. Use the IP addrees
+assigned to module WiFi (you can display it on LCD, if needed).
+
