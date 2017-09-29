@@ -25,7 +25,7 @@ visit during day to Google Sheet
 * 2x 10KOhm resistor, 1x 5KOhm small potenciometer
 
 Note: it is better purchase the LCD with integrated I2C interface, than to
-build own using PFC8574P Expander. Own solution works not with 3.3V. It
+build own using PFC8574P Expander. Own solution do not work with 3.3V. It
 was necessary power up display with 5V and separate the voltage of I2C
 bus using Level Covertor (ESP8266 pins are not 5V tolerant).
 
@@ -34,10 +34,10 @@ Arduino IDE 1.8 or later, installed support for ESP8266 Development boards
 
 Library manager used to install build-in libraries:
 * Multiple ESP8266 libs installed with development board support (ESP8266mDNS, ...)
-* Encoder by Paul Stoffregen 1.4.1
+* Encoder by Paul Stoffregen 1.4.1, works fine in interrupt mode only
 * NtpClientLib by German Martin 2.0.5
 * Pushbutton by Polohu 2.0.0
-* Time by Michael Margolis 1.5.0
+* Time by Michael Margolis 1.5.0, needed by NtpClientLib
 * Task by Makuna 1.1.4
 
 Other used libraries (directly merged to project sources)
